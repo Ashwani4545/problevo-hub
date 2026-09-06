@@ -2,7 +2,7 @@
 
 Project Archive is a static single-page web app for browsing a curated set of capstone and hackathon problem statements. It currently catalogs 587 statements across 5 tracks and lets you search, filter, and inspect each entry in a detail modal.
 
-### Link - problevo-hub.vercel.app
+### Link - https://capstone-hackathon-track-explorer.vercel.app/
 
 ## What it does
 

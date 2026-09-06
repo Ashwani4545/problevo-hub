@@ -1,13 +1,18 @@
-(function(){
+(function () {
   "use strict";
 
   const TRACKS = [
-    { key:"all",  label:"All Tracks" },
-    { key:"AI-ML", label:"AI / ML" },
-    { key:"Data Science and Big Data", label:"Data Science & Big Data" },
-    { key:"IoT-Embedded Systems", label:"IoT / Embedded Systems" },
-    { key:"Cloud Computing", label:"Cloud Computing" },
-    { key:"DevOps", label:"DevOps" },
+    { key: "all", label: "All Tracks" },
+    { key: "AI-ML", label: "AI / ML" },
+    { key: "Full-Stack & Web Development", label: "Full-Stack & Web Dev" },
+    { key: "Data Science and Big Data", label: "Data Science & Big Data" },
+    { key: "IoT-Embedded Systems", label: "IoT / Embedded Systems" },
+    { key: "Cloud Computing", label: "Cloud Computing" },
+    { key: "UI/UX Design", label: "UI/UX Design" },
+    { key: "Software Testing & QA", label: "Software Testing & QA" },
+    { key: "Product & Industrial Design", label: "Product & Industrial Design" },
+    { key: "Programming", label: "Programming" },
+    { key: "DevOps", label: "DevOps" },
   ];
 
   const state = {
@@ -46,12 +51,12 @@
   // ---------- Header stats ----------
   headerStats.innerHTML = `
     <span><b>${PROJECTS.length}</b> statements</span>
-    <span><b>5</b> tracks</span>
-    <span><b>9</b> source sheets</span>
+    <span><b>10</b> tracks</span>
+    <span><b>15</b> source sheets</span>
   `;
 
   // ---------- Track nav ----------
-  function renderTrackNav(){
+  function renderTrackNav() {
     trackNav.innerHTML = TRACKS.map(t => `
       <button class="chip ${state.track === t.key ? 'active' : ''}" data-cat="${t.key}" data-key="${t.key}">
         <span class="dot"></span>
@@ -64,7 +69,7 @@
 
   trackNav.addEventListener("click", (e) => {
     const btn = e.target.closest(".chip");
-    if(!btn) return;
+    if (!btn) return;
     state.track = btn.dataset.key;
     renderTrackNav();
     renderGrid();
@@ -90,15 +95,15 @@
   });
 
   // ---------- Helpers ----------
-  function escapeHtml(str){
+  function escapeHtml(str) {
     return String(str)
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;");
   }
 
-  function matchesQuery(p, q){
-    if(!q) return true;
+  function matchesQuery(p, q) {
+    if (!q) return true;
     return (
       p.title.toLowerCase().includes(q) ||
       p.description.toLowerCase().includes(q) ||
@@ -108,7 +113,7 @@
     );
   }
 
-  function getFiltered(){
+  function getFiltered() {
     return PROJECTS.filter(p => {
       const trackOk = state.track === "all" || p.category === state.track;
       return trackOk && matchesQuery(p, state.query);
@@ -118,7 +123,7 @@
   // ---------- Render grid ----------
   let cardHtmlCache = null;
 
-  function cardTemplate(p, idx){
+  function cardTemplate(p, idx) {
     return `
       <button class="card" data-cat="${p.category}" data-idx="${idx}" aria-haspopup="dialog">
         <div class="card-top">
@@ -135,13 +140,13 @@
     `;
   }
 
-  function renderGrid(){
+  function renderGrid() {
     const filtered = getFiltered();
     resultCount.textContent = state.query || state.track !== "all"
       ? `${filtered.length} of ${PROJECTS.length} shown`
       : `${PROJECTS.length} problem statements`;
 
-    if(filtered.length === 0){
+    if (filtered.length === 0) {
       grid.innerHTML = "";
       emptyState.hidden = false;
       return;
@@ -154,7 +159,7 @@
 
   grid.addEventListener("click", (e) => {
     const card = e.target.closest(".card");
-    if(!card) return;
+    if (!card) return;
     const idx = Number(card.dataset.idx);
     openModal(PROJECTS[idx]);
   });
@@ -162,12 +167,12 @@
   // ---------- Modal ----------
   let lastFocused = null;
 
-  function trackLabel(cat){
+  function trackLabel(cat) {
     const t = TRACKS.find(t => t.key === cat);
     return t ? t.label : cat;
   }
 
-  function openModal(p){
+  function openModal(p) {
     lastFocused = document.activeElement;
     modalCard.style.setProperty("--accent", accentFor(p.category));
     modalCard.setAttribute("data-cat", p.category);
@@ -187,29 +192,34 @@
     modalClose.focus();
   }
 
-  function closeModal(){
+  function closeModal() {
     modalBackdrop.classList.remove("open");
     document.body.style.overflow = "";
-    if(lastFocused) lastFocused.focus();
+    if (lastFocused) lastFocused.focus();
   }
 
-  function accentFor(cat){
+  function accentFor(cat) {
     const map = {
       "AI-ML": "#8b5cf6",
       "Data Science and Big Data": "#22d3ee",
       "IoT-Embedded Systems": "#f5a623",
       "Cloud Computing": "#34d399",
       "DevOps": "#fb7185",
+      "Full-Stack & Web Development": "#3b82f6",
+      "UI/UX Design": "#ec4899",
+      "Software Testing & QA": "#a3e635",
+      "Product & Industrial Design": "#fb923c",
+      "Programming": "#2dd4bf",
     };
     return map[cat] || "#8b5cf6";
   }
 
   modalClose.addEventListener("click", closeModal);
   modalBackdrop.addEventListener("click", (e) => {
-    if(e.target === modalBackdrop) closeModal();
+    if (e.target === modalBackdrop) closeModal();
   });
   document.addEventListener("keydown", (e) => {
-    if(e.key === "Escape" && modalBackdrop.classList.contains("open")) closeModal();
+    if (e.key === "Escape" && modalBackdrop.classList.contains("open")) closeModal();
   });
 
   // ---------- Init ----------
